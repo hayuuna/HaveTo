@@ -1,16 +1,26 @@
-// import React from 'react';
-import '@/App.css';
+import { ThemeProvider } from 'styled-components';
+import GlobalStyle from '@/styles/Globalstyle';
+import * as S from '@/styles/Contentstyle';
+import { Routes, Route } from 'react-router-dom';
 
-import Home from '@src/pages/Home';
+import Home from '@/pages/Home/Home';
+import theme from '@/styles/theme';
 
 function App() {
-	// eslint-disable-next-line react/react-in-jsx-scope
-
-	return (
-		<div>
-			<Home />
-		</div>
-	);
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <S.Content>
+          <S.Wrap>
+            <Routes>
+              <Route path="/" element={<Home />} />
+            </Routes>
+          </S.Wrap>
+        </S.Content>
+      </ThemeProvider>
+    </>
+  );
 }
 
 export default App;
