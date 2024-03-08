@@ -45,8 +45,8 @@ export default function Home() {
     e.preventDefault();
     const target = e.currentTarget as HTMLButtonElement;
 
-    if (target.parentElement) {
-      const targetId = target.parentElement.id;
+    if (target.parentElement?.parentElement) {
+      const targetId = target.parentElement.parentElement.id;
       const updatedTodoArray = todoArray.filter((todo) => todo.id != targetId);
       setTodoArray(updatedTodoArray);
       localStorage.setItem(TODO_KEY, JSON.stringify(todoArray));
