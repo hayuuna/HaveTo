@@ -17,6 +17,7 @@ export default function Home() {
   const currentDate = dayjs().format('YYYY.MM.DD');
   const [todoValue, setTodoValue] = useState('');
   const [todoArray, setTodoArray] = useState<Todo[]>([]);
+  const [updateTodo, setUpdateTodo] = useState('');
   const savedTodo = localStorage.getItem(TODO_KEY);
 
   function todoChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -30,9 +31,10 @@ export default function Home() {
     if (todoValue.trim() === '') return;
 
     const newTodoObj = {
-      text: todoValue,
       id: Date.now().toString(),
+      text: todoValue,
       done: false,
+      data: currentDate,
     };
 
     setTodoValue('');
@@ -42,6 +44,7 @@ export default function Home() {
   function deleteClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const target = e.currentTarget as HTMLButtonElement;
+
     if (target.parentElement) {
       const targetId = target.parentElement.id;
       const updatedTodoArray = todoArray.filter((todo) => todo.id != targetId);
@@ -71,8 +74,24 @@ export default function Home() {
         return updatedTodoArray;
       });
 
-      // todoArray[todoIndex].done = currentState;
       localStorage.setItem(TODO_KEY, JSON.stringify(todoArray));
+    }
+  }
+
+  function modifyClickHandler(e: React.MouseEvent<HTMLButtonElement>, todoId: string) {
+    e.preventDefault();
+    const todoIndex = todoArray.findIndex((item) => item.id === todoId);
+
+    if (todoIndex !== -1) {
+      const updatedTodoArray = [...todoArray];
+      updatedTodoArray[todoIndex] = {
+        ...updatedTodoArray[todoIndex],
+        text: updateTodo,
+      };
+
+      setUpdateTodo(todoArray[todoIndex].text);
+      setTodoArray(updatedTodoArray);
+      localStorage.setItem(TODO_KEY, JSON.stringify(updatedTodoArray));
     }
   }
 
@@ -108,10 +127,13 @@ export default function Home() {
 
       {todoArray.map((todo, index) => (
         <TodoItem
+          key={index}
           todo={todo}
+          updateTodo={updateTodo}
+          setUpdateTodo={setUpdateTodo}
           deleteClickHandler={deleteClickHandler}
           toggleClickHandler={toggleClickHandler}
-          key={index}
+          modifyClickHandler={(e, todoId) => modifyClickHandler(e, todoId)}
         />
       ))}
     </>

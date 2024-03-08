@@ -6,16 +6,26 @@ export const Item = styled.div`
   display: flex;
   align-items: center;
 
+  div:last-of-type {
+    margin-left: auto;
+    display: flex;
+  }
+
   button {
     width: 22px;
     height: 22px;
-    margin-left: auto;
   }
+`;
+
+export const EditInput = styled.input`
+  width: 80%;
+  color: ${(props) => props.theme.colors.white};
 `;
 
 export const Text = styled.p<{ done?: boolean }>`
   color: ${(props) => (props.done ? `${props.theme.colors.gray}` : `${props.theme.colors.white}`)};
   text-decoration: ${(props) => (props.done ? `line-through` : `none`)};
+  font-size: 14px;
 `;
 
 export const Checkbox = styled.div<{ done?: boolean }>`
