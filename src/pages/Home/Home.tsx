@@ -1,5 +1,5 @@
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import * as S from '@/pages/Home/Home.styles';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import Plus from '@/assets/Plus.svg?react';
@@ -14,7 +14,8 @@ type Todo = {
 };
 
 export default function Home() {
-  const currentDate = dayjs().format('YYYY.MM.DD');
+  const [currentDate, setCurrentDate] = useState(dayjs().format('YYYY.MM.DD'));
+  const currentDateDay = dayjs();
   const [todoValue, setTodoValue] = useState('');
   const [todoArray, setTodoArray] = useState<Todo[]>([]);
   const [updateTodo, setUpdateTodo] = useState('');
@@ -95,6 +96,16 @@ export default function Home() {
     }
   }
 
+  function nextDate() {
+    const currentYear = currentDateDay.add(1, 'day');
+    setCurrentDate(currentYear.format('YYYY.MM.DD'));
+  }
+
+  function prevDate() {
+    const currentYear = currentDateDay.add(1, 'day');
+    setCurrentDate(currentYear.format('YYYY.MM.DD'));
+  }
+
   useEffect(() => {
     if (savedTodo) {
       const parseTodo = JSON.parse(savedTodo);
@@ -109,11 +120,11 @@ export default function Home() {
   return (
     <>
       <S.DateBox>
-        <button>
+        <button onClick={prevDate}>
           <AiOutlineLeft color="white" />
         </button>
         <S.CurrentDate>{currentDate}</S.CurrentDate>
-        <button>
+        <button onClick={nextDate}>
           <AiOutlineRight color="white" />
         </button>
       </S.DateBox>

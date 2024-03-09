@@ -52,6 +52,7 @@ const GlobalStyle = createGlobalStyle`
     input {
         background: none;
         border: none;
+        border-radius: 0;
     }
 
     input:focus {
