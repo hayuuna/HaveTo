@@ -20,6 +20,7 @@ export const Item = styled.div`
 export const EditInput = styled.input`
   width: 80%;
   color: ${(props) => props.theme.colors.white};
+  border-bottom: ${(props) => `1px solid ${props.theme.colors.gray}`};
 `;
 
 export const Text = styled.p<{ done?: boolean }>`
@@ -34,9 +35,10 @@ export const Checkbox = styled.div<{ done?: boolean }>`
   border-radius: 50%;
   border: ${(props) => (props.done ? 'none' : `1px solid ${props.theme.colors.gray}`)};
   margin-right: 10px;
-  background-color: ${(props) => (props.done ? `${props.theme.colors.yellow}` : 'none')};
   display: flex;
   justify-content: center;
+
+  background-color: ${(props) => (props.done ? `${props.theme.colors.yellow}` : 'none')};
 
   span {
     font-size: 18px;

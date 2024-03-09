@@ -1,7 +1,8 @@
 import * as S from '@/components/TodoItem/TodoItem.styles';
 import Delete from '@/assets/Delete.svg?react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Check from '@/assets/Check.svg?react';
+import Complete from '@/assets/Complete.svg?react';
 
 type Todo = {
   text: string;
@@ -34,21 +35,31 @@ export default function TodoItem({
     setUpdateTodo(todo.text);
   }
 
-  // useEffect(() => {
-  //   function handleClick(e: MouseEvent) {
-  //     if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-  //       setEditMode(false);
-  //     }
-  //   }
-  //   window.addEventListener('mousedown', handleClick);
-  //   return () => window.removeEventListener('mousedown', handleClick);
-  // }, [inputRef]);
+  useEffect(() => {
+    function handleOutSideClick(e: MouseEvent) {
+      if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
+        setEditMode(false);
+      }
+    }
+    window.addEventListener('mousedown', handleOutSideClick);
+    return () => window.removeEventListener('mousedown', handleOutSideClick);
+  }, [inputRef]);
+
+  useEffect(() => {
+    if (todo.done) {
+      setEditMode(false);
+    }
+  });
 
   return (
     <S.Item id={todo.id}>
-      <S.Checkbox onClick={toggleClickHandler} done={todo.done}>
-        <span>{todo.done ? '✓' : ''}</span>
-      </S.Checkbox>
+      {todo.done ? (
+        <S.Checkbox onClick={toggleClickHandler} done={todo.done}>
+          <span>✓</span>
+        </S.Checkbox>
+      ) : (
+        <S.Checkbox onClick={toggleClickHandler} done={todo.done}></S.Checkbox>
+      )}
 
       {editMode ? (
         <S.EditInput value={updateTodo} onChange={(e) => setUpdateTodo(e.target.value)} ref={inputRef} />

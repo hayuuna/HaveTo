@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import * as S from '@/pages/Home/Home.styles';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import Plus from '@/assets/Plus.svg?react';
-import TodoItem from '@components/TodoItem';
+import TodoItem from '@components/TodoItem/TodoItem';
 
 const TODO_KEY = 'todo';
 
