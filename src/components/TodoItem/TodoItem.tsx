@@ -2,7 +2,6 @@ import * as S from '@/components/TodoItem/TodoItem.styles';
 import Delete from '@/assets/Delete.svg?react';
 import { useState, useRef, useEffect } from 'react';
 import Check from '@/assets/Check.svg?react';
-import Complete from '@/assets/Complete.svg?react';
 
 type Todo = {
   text: string;
@@ -16,7 +15,7 @@ type TodoItemProps = {
   toggleClickHandler: React.MouseEventHandler<HTMLDivElement>;
   modifyClickHandler: (e: React.MouseEvent<HTMLButtonElement>, todoId: string) => void;
   updateTodo: string;
-  setUpdateTodo: any; // 수정하기
+  setUpdateTodo: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function TodoItem({
@@ -37,12 +36,15 @@ export default function TodoItem({
 
   useEffect(() => {
     function handleOutSideClick(e: MouseEvent) {
-      if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
+      if (
+        inputRef.current &&
+        inputRef.current.parentElement &&
+        !inputRef.current.parentElement.contains(e.target as Node)
+      ) {
         setEditMode(false);
       }
     }
     window.addEventListener('mousedown', handleOutSideClick);
-    return () => window.removeEventListener('mousedown', handleOutSideClick);
   }, [inputRef]);
 
   useEffect(() => {
