@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from 'react';
 import * as S from '@/components/TodoItem/TodoItem.styles';
 import Delete from '@/assets/Delete.svg?react';
 import Check from '@/assets/Check.svg?react';
+import dayjs from 'dayjs';
 
 type Todo = {
   text: string;
   id: string;
   done: boolean;
+  date: dayjs.Dayjs;
 };
 
 type TodoItemProps = {

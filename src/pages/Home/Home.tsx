@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 import * as S from '@/pages/Home/Home.styles';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import Plus from '@/assets/Plus.svg?react';
@@ -11,11 +12,15 @@ type Todo = {
   text: string;
   id: string;
   done: boolean;
+  date: dayjs.Dayjs;
 };
 
+dayjs.locale('ko');
+// currentDate.format('YYYY.MM.DD (ddd)');
+
 export default function Home() {
-  const [currentDate, setCurrentDate] = useState(dayjs().format('YYYY.MM.DD'));
-  const currentDateDay = dayjs();
+  const currentDate = dayjs(); // 오늘 날짜를 불러오는 메소드
+  const [paintDate, setPaintDate] = useState(currentDate); // 화면에 나오는 날짜..................
   const [todoValue, setTodoValue] = useState('');
   const [todoArray, setTodoArray] = useState<Todo[]>([]);
   const [updateTodo, setUpdateTodo] = useState('');
@@ -35,7 +40,7 @@ export default function Home() {
       id: Date.now().toString(),
       text: todoValue,
       done: false,
-      data: currentDate,
+      date: paintDate,
     };
 
     setTodoValue('');
@@ -97,13 +102,13 @@ export default function Home() {
   }
 
   function nextDate() {
-    const currentYear = currentDateDay.add(1, 'day');
-    setCurrentDate(currentYear.format('YYYY.MM.DD'));
+    const addDate = paintDate.add(1, 'day');
+    setPaintDate(addDate);
   }
 
   function prevDate() {
-    const currentYear = currentDateDay.add(1, 'day');
-    setCurrentDate(currentYear.format('YYYY.MM.DD'));
+    const minusDate = paintDate.add(-1, 'day');
+    setPaintDate(minusDate);
   }
 
   useEffect(() => {
@@ -123,7 +128,7 @@ export default function Home() {
         <button onClick={prevDate}>
           <AiOutlineLeft color="white" />
         </button>
-        <S.CurrentDate>{currentDate}</S.CurrentDate>
+        <S.CurrentDate>{paintDate.format('YYYY.MM.DD (ddd)')}</S.CurrentDate>
         <button onClick={nextDate}>
           <AiOutlineRight color="white" />
         </button>
@@ -136,17 +141,24 @@ export default function Home() {
         </button>
       </S.TodoForm>
 
-      {todoArray.map((todo, index) => (
-        <TodoItem
-          key={index}
-          todo={todo}
-          updateTodo={updateTodo}
-          setUpdateTodo={setUpdateTodo}
-          deleteClickHandler={deleteClickHandler}
-          toggleClickHandler={toggleClickHandler}
-          modifyClickHandler={(e, todoId) => modifyClickHandler(e, todoId)}
-        />
-      ))}
+      {todoArray
+        .filter((item) => {
+          const itemDate = dayjs(item.date);
+          const itemDateFormat = itemDate.format('YYYY.MM.DD');
+          const paintDateFormat = paintDate.format('YYYY.MM.DD');
+          return itemDateFormat === paintDateFormat;
+        })
+        .map((todo, index) => (
+          <TodoItem
+            key={index}
+            todo={todo}
+            updateTodo={updateTodo}
+            setUpdateTodo={setUpdateTodo}
+            deleteClickHandler={deleteClickHandler}
+            toggleClickHandler={toggleClickHandler}
+            modifyClickHandler={(e, todoId) => modifyClickHandler(e, todoId)}
+          />
+        ))}
     </>
   );
 }
