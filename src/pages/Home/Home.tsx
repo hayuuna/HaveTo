@@ -16,14 +16,14 @@ type Todo = {
 };
 
 dayjs.locale('ko');
-// currentDate.format('YYYY.MM.DD (ddd)');
 
 export default function Home() {
-  const currentDate = dayjs(); // 오늘 날짜를 불러오는 메소드
-  const [paintDate, setPaintDate] = useState(currentDate); // 화면에 나오는 날짜..................
+  const currentDate = dayjs();
+  const [paintDate, setPaintDate] = useState(currentDate);
   const [todoValue, setTodoValue] = useState('');
   const [todoArray, setTodoArray] = useState<Todo[]>([]);
   const [updateTodo, setUpdateTodo] = useState('');
+  const [completedTodoCheck, setCompletedTodoCheck] = useState(false);
   const savedTodo = localStorage.getItem(TODO_KEY);
 
   function todoChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -111,6 +111,10 @@ export default function Home() {
     setPaintDate(minusDate);
   }
 
+  function completedTodoHiddenToggle() {
+    setCompletedTodoCheck(!completedTodoCheck);
+  }
+
   useEffect(() => {
     if (savedTodo) {
       const parseTodo = JSON.parse(savedTodo);
@@ -133,6 +137,11 @@ export default function Home() {
           <AiOutlineRight color="white" />
         </button>
       </S.DateBox>
+
+      <S.TodoCompleteBox>
+        <p>할일 완료 숨기기</p>
+        <S.CompleteCheckBox onClick={completedTodoHiddenToggle} />
+      </S.TodoCompleteBox>
 
       <S.TodoForm onSubmit={todoSubmitHandler}>
         <input placeholder="할일을 작성해보세요." value={todoValue} onChange={todoChangeHandler} />
