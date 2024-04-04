@@ -29,6 +29,16 @@ export const CompleteCheckBox = styled.div<{ completed?: boolean }>`
   height: 16px;
   border: 1px solid ${({ theme }) => theme.colors.gray};
   border-radius: 4px;
+  position: relative;
+`;
+
+export const CheckContainer = styled.div`
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  margin-right: -4px;
+  margin-top: -6px;
+  /* border: 1px solid; */
 `;
 
 export const TodoForm = styled.form`

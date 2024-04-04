@@ -11,12 +11,14 @@
   },
   "dependencies": {
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.2",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
+    "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",

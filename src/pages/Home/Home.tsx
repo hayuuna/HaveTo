@@ -5,7 +5,8 @@ import * as S from '@/pages/Home/Home.styles';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import Plus from '@/assets/Plus.svg?react';
 import TodoItem from '@components/TodoItem/TodoItem';
-
+import Check from '@/assets/Check.svg?react';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 const TODO_KEY = 'todo';
 
 type Todo = {
@@ -110,7 +111,6 @@ export default function Home() {
     const minusDate = paintDate.add(-1, 'day');
     setPaintDate(minusDate);
   }
-
   function completedTodoHiddenToggle() {
     setCompletedTodoCheck(!completedTodoCheck);
   }
@@ -125,6 +125,39 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem(TODO_KEY, JSON.stringify(todoArray));
   }, [todoArray]);
+
+  // Draggable이 Droppable로 드래그 되었을 때 실행되는 이벤트
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination } = result;
+
+    // 드래그가 취소된 경우 또는 대상 위치가 없는 경우
+    if (!destination) {
+      return;
+    }
+
+    // 아이템을 옮긴 후의 목록을 생성
+    const updatedTodoArray = [...todoArray];
+    const movedTodo = updatedTodoArray.splice(source.index, 1)[0];
+    updatedTodoArray.splice(destination.index, 0, movedTodo);
+    setTodoArray(updatedTodoArray);
+    localStorage.setItem(TODO_KEY, JSON.stringify(updatedTodoArray));
+  };
+
+  // requestAnimationFrame 초기화
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const animation = requestAnimationFrame(() => setEnabled(true));
+
+    return () => {
+      cancelAnimationFrame(animation);
+      setEnabled(false);
+    };
+  }, []);
+
+  if (!enabled) {
+    return null;
+  }
 
   return (
     <>
@@ -141,6 +174,11 @@ export default function Home() {
       <S.TodoCompleteBox>
         <p>할일 완료 숨기기</p>
         <S.CompleteCheckBox onClick={completedTodoHiddenToggle} />
+        {completedTodoCheck && (
+          <S.CheckContainer onClick={completedTodoHiddenToggle}>
+            <Check />
+          </S.CheckContainer>
+        )}
       </S.TodoCompleteBox>
 
       <S.TodoForm onSubmit={todoSubmitHandler}>
@@ -150,24 +188,40 @@ export default function Home() {
         </button>
       </S.TodoForm>
 
-      {todoArray
-        .filter((item) => {
-          const itemDate = dayjs(item.date);
-          const itemDateFormat = itemDate.format('YYYY.MM.DD');
-          const paintDateFormat = paintDate.format('YYYY.MM.DD');
-          return itemDateFormat === paintDateFormat;
-        })
-        .map((todo, index) => (
-          <TodoItem
-            key={index}
-            todo={todo}
-            updateTodo={updateTodo}
-            setUpdateTodo={setUpdateTodo}
-            deleteClickHandler={deleteClickHandler}
-            toggleClickHandler={toggleClickHandler}
-            modifyClickHandler={(e, todoId) => modifyClickHandler(e, todoId)}
-          />
-        ))}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              {todoArray
+                .filter((item) => {
+                  const itemDate = dayjs(item.date);
+                  const itemDateFormat = itemDate.format('YYYY.MM.DD');
+                  const paintDateFormat = paintDate.format('YYYY.MM.DD');
+                  return itemDateFormat === paintDateFormat;
+                })
+                .map((todo, index) => (
+                  <Draggable key={todo.id} draggableId={todo.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        <TodoItem
+                          key={index}
+                          todo={todo}
+                          updateTodo={updateTodo}
+                          setUpdateTodo={setUpdateTodo}
+                          deleteClickHandler={deleteClickHandler}
+                          toggleClickHandler={toggleClickHandler}
+                          modifyClickHandler={(e, todoId) => modifyClickHandler(e, todoId)}
+                          completedTodoCheck={completedTodoCheck}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </>
   );
 }

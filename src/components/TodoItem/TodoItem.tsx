@@ -18,6 +18,7 @@ type TodoItemProps = {
   modifyClickHandler: (e: React.MouseEvent<HTMLButtonElement>, todoId: string) => void;
   updateTodo: string;
   setUpdateTodo: React.Dispatch<React.SetStateAction<string>>;
+  completedTodoCheck: boolean;
 };
 
 export default function TodoItem({
@@ -27,6 +28,7 @@ export default function TodoItem({
   modifyClickHandler,
   updateTodo,
   setUpdateTodo,
+  completedTodoCheck,
 }: TodoItemProps) {
   const [editMode, setEditMode] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,6 +56,10 @@ export default function TodoItem({
       setEditMode(false);
     }
   });
+
+  if (completedTodoCheck && todo.done) {
+    return null; // 완료된 할 일 숨기기
+  }
 
   return (
     <S.Item id={todo.id}>
